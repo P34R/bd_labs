@@ -53,12 +53,7 @@ int my_realloc(int *arr, int size, int new_size) {
 int get_m(int *ck_ind, int *or_ind, int id,int size_ck) {
 //	FILE *cki = fopen("cook.ind", "rb");
 
-/*	fseek(cki, 0, 2);
-	int k = ftell(cki) / (2*sizeof(int));
-	if (k< id) {
-		fclose(ck);
-		menus(ck_ind, or_ind);
-	}*/
+
 	struct Cook cook;
 	if (id >= size_ck || id<0) return 0;
 	FILE *ck = fopen("cook.bin", "rb");
@@ -112,10 +107,6 @@ int get_s_m(int *ck_ind, int *or_ind, int id,int size_ck) {
 	fread(&cook, sizeof(Cook), 1, ck);
 	fclose(ck);
 	fseek(or , or_ind[cook.order_id]*sizeof(Order), 0);
-/*	if (id > ftell(or ) / sizeof(struct Order)) {
-		fclose(or );
-		menus(ck_ind, or_ind);
-	}*/
 	struct Order order;
 //	fseek(or , 0, 0);
 	fread(&order, sizeof(Order), 1, or );
@@ -133,14 +124,6 @@ int get_s_m(int *ck_ind, int *or_ind, int id,int size_ck) {
 	cout << endl;
 	cout << "ID: " << order.id << endl;
 	cout << "PRICE: " << order.price;
-/*	while (fread(&order, sizeof(struct Order), 1, or )!=NULL) {
-		if (order.cook==id && order.is_exist == 1) {
-			cout << endl;
-			cout << "ID: " << order.id << endl;
-			cout << "PRICE: " << order.price << endl;
-			cout << "COOK ID: " << order.cook << endl;
-		}
-	}*/
 	fclose(or );
 //	menus(ck_ind, or_ind);
 	return 0;
@@ -208,24 +191,6 @@ void delete_s_m(int *ck_ind, int *or_ind, int id, int size_or) {
 		}
 	}
 	fclose(or );
-/*	while (fread(&order, sizeof(struct Order), 1, or ) != NULL) {
-		if (order.id == id && order.is_exist==1) {
-			order.is_exist = 0;
-			or_ind[id] = -1;
-			if (order.next != -1)
-				id = order.next;
-		}
-		fwrite(&order, sizeof(struct Order), 1, swap);
-	}
-	fclose(or ); fclose(swap);
-	or = fopen("order.bin", "wb");
-	swap = fopen("swap.bin", "rb");
-	while (fread(&order, sizeof(struct Order), 1, swap) != NULL) {
-
-		fwrite(&order, sizeof(struct Order), 1, or );
-	}
-	fclose(swap);
-	fclose(or );*/
 	FILE *or_i = fopen("order.ind", "wb");
 	for (int i = 0; i < size_or; i++) {
 		fwrite(&i, sizeof(int), 1, or_i);
@@ -237,29 +202,6 @@ void delete_s_m(int *ck_ind, int *or_ind, int id, int size_or) {
 void del_m(int *ck_ind, int *or_ind,int id, int size_ck,int size_or){
 	FILE *ck = fopen("cook.bin", "rb+");
 	struct Cook cook;
-/*	while (fread(&order, sizeof(struct Order), 1, or )!=NULL) {
-		if (order.cook == id && order.is_exist == 1) {
-			cout << "\n YOU CANT DELETE COOK WHILE U HAVE ORDERS\n";
-     fseek(or,0,0);
-		FILE *swap=fopen("swap.bin","wb");
-		while(fread(&order,sizeof(struct Order),1,or)!=NULL){
-			if (order.cook==id && order.is_exist==1){
-			order.is_exist=0;
-			}
-			fwrite(&order,sizeof(struct Order),1,swap);
-		}
-		fclose(or);
-		fclose(swap);
-		swap=fopen("swap.bin","rb");
-		or=fopen("order.bin","wb");
-		while (fread(&order,sizeof(struct Order),1,swap)!=NULL)
-			fwrite(&order,sizeof(struct Order),1,or);
-		fclose(swap);
-			
-			fclose(or);
-			menus(ck_ind, or_ind);
-		}
-	}*/
 	fseek(ck, ck_ind[id] * sizeof(Cook), 0);
 	fread(&cook, sizeof(Cook), 1, ck);
 	fseek(ck, ck_ind[id] * sizeof(Cook), 0);
@@ -267,22 +209,6 @@ void del_m(int *ck_ind, int *or_ind,int id, int size_ck,int size_or){
 	fwrite(&cook, sizeof(Cook), 1, ck);
 	delete_s_m(ck_ind, or_ind, cook.order_id,size_or);
 	fclose(ck);
-/*	FILE *swap = fopen("swap.bin", "wb");
-	fseek(ck, 0, 0);
-	while (fread(&cook, sizeof(struct Cook), 1, ck) != NULL) {
-		fwrite(&cook, sizeof(struct Cook), 1, swap);
-	}
-	fclose(ck); fclose(swap);
-	ck = fopen("cook.bin", "wb");
-	swap = fopen("swap.bin", "rb");
-	while (fread(&cook, sizeof(struct Cook), 1, swap) != NULL) {
-		if (cook.id == id)cook.is_exist = 0;
-		fwrite(&cook, sizeof(struct Cook),1, ck);
-	}
-	fclose(ck);
-	fclose(swap);
-	swap = fopen("swap.bin", "wb");
-	fclose(swap);*/
 	ck_ind[id] = -1;
 	FILE *ck_i = fopen("cook.ind", "wb");
 	for (int i = 0; i < size_ck; i++) {
@@ -327,36 +253,8 @@ void del_s(int *ck_ind, int *or_ind, int id,int size_or) {
 		}
 //	}
 	fclose(ck);
-//	or_ind[id] = -1;
-/*	while (fread(&order, sizeof(struct Order), 1, or ) != NULL) {
-		fwrite(&order, sizeof(struct Order), 1, swap);
-	}
-	fclose(or ); fclose(swap);
-	or = fopen("order.bin", "wb");
-	swap = fopen("swap.bin", "rb");*/
-//	while (fread(&order, sizeof(struct Order), 1, swap) != NULL) {
-		/*	if (order.next != NULL) {
-	order = *order.next;
-	FILE *ck=fopen("cook.bin", "rb");
-	FILE *sw2=fopen("swap2.bin", "wb");
-	struct Cook cook;
-	while (fread(&cook, sizeof(Cook), 1, ck) != NULL) {
-		if (cook.id == order.cook) cook.order_id = order.id;
-		fwrite(&cook, sizeof(Cook), 1, sw2);
-			}	
-	fclose(ck); ck = fopen("cook.bin", "wb");
-	fclose(sw2); sw2 = fopen("swap2.bin", "rb");
-	while (fread(&cook, sizeof(Cook), 1, sw2) != NULL)
-		fwrite(&cook, sizeof(Cook), 1, ck);
-	}*/
-//		if (order.id == id)order.is_exist = 0;
-//		fwrite(&order, sizeof(struct Order), 1, or);
-//	}
 	or_ind[id] = -1;
 	fclose(or);
-//	fclose(swap);
-//	swap = fopen("swap.bin", "wb");
-//	fclose(swap);
 	FILE *or_i = fopen("order.ind", "wb");
 	for (int i = 0; i < size_or; i++) {
 		fwrite(&i, sizeof(int), 1, or_i);
@@ -437,7 +335,7 @@ void insert_m(int *ck_ind, int *or_ind, int size_ck, int size_or) {
 	int counter_s = 0;
 	while (fread(&cook_temp, sizeof(Cook), 1, ck) != NULL) {
 		if (cook_temp.id == id) {
-			fseek(ck, counter_s, 0);
+			fseek(ck, counter_s*sizeof(Cook), 0);
 			ck_ind[id] = ftell(ck) / sizeof(Cook);
 			fwrite(&cook, sizeof(Cook), 1, ck);
 			checker = 1;
@@ -462,6 +360,8 @@ void insert_m(int *ck_ind, int *or_ind, int size_ck, int size_or) {
 //	menus(ck_ind, or_ind);
 }
 void t_add_order_to(int *ck_ind, int *or_ind, int id, int cook_id) {
+	// IT's OLD FUNCTION OF UPDATE_S (BAD REALISATION)
+	//#######################################################
 	FILE *ck = fopen("cook.bin", "rb");
 	struct Cook cook;
 	fseek(ck, ck_ind[cook_id] * sizeof(Cook), 0);
@@ -518,17 +418,6 @@ void add_order_to(int *ck_ind, int *or_ind, int id, int cook_id) {
 			beta = 1;
 		}
 	}
-/*	while (fread(&order, sizeof(Order), 1, or ) != NULL) {
-		if (cod == order.id && order.is_exist == 1) {
-			if (order.next != -1) {
-				cod = order.next;
-			}
-			else {
-				order.next = id;
-			}
-		}
-		fwrite(&order, sizeof(Order), 1, sw);
-	}*/
 	fclose(or );
 	fclose(ck);
 }
@@ -552,7 +441,6 @@ void insert_s(int *ck_ind, int *or_ind, int size_or, int size_ck) {
 			my_realloc(or_ind, size_or, size_or + 1);
 			size_or += 1;
 			point = i+1;
-			//or_ind = (int*)realloc(or_ind, size_or*sizeof(int));
 		}
 		if (i!=size_or && or_ind[i] < 0) {
 			id = i;
@@ -560,15 +448,16 @@ void insert_s(int *ck_ind, int *or_ind, int size_or, int size_ck) {
 		}
 	}
 	struct Order order_temp;
-//	fseek(or , 0, 2);
-
+	int temp_size_ck = size_ck;
+	for (int i = 0; i < size_ck; i++)
+		if (ck_ind[i] < 0)temp_size_ck--;
+	cout << "\n\n\nTHERE IS " << temp_size_ck << " COOKS\n";
 	order.id = id;
 	cout << endl;
 	cout << "\nENTER\nPRICE: ";
 	cin >> order.price;
 	cin.ignore();
 	cout << endl;
-//	FILE *ck = fopen("cook.bin", "rb");
 	int choosee=0;
 	if (size_ck != 0) {
 		cout << "\nDO U WANT TO CONNECT ORDER WITH COOK THAT ALREADY EXIST?\n1 IF YES, ANY OTHER NUMBER IF NO\n";
@@ -577,7 +466,7 @@ void insert_s(int *ck_ind, int *or_ind, int size_or, int size_ck) {
 	}
 	int order_cook = -1;
 	if (choosee == 1) {
-		if (size_ck != 0) {
+//		if (size_ck != 0) {
 			cout << "COOK ID: ";
 			cin >> order_cook;
 			cin.ignore();
@@ -587,19 +476,13 @@ void insert_s(int *ck_ind, int *or_ind, int size_or, int size_ck) {
 				cin.ignore();
 			}
 
-
-			//  cout << "COOK ID: ";
-			//	cin >> order_cook;
-			//	cin.ignore();
-			//	fseek(ck, ck_ind[order.cook] * sizeof(Cook), 0);
-			//	fread(&cook, sizeof(Cook), 1, ck);
-		}
+//		}
 	}
 	int counter_s = 0;
 	int locker = 0;
 	while (fread(&order_temp, sizeof(Order), 1, or ) != NULL) {
 		if (order_temp.id == order.id) {
-			fseek(or , counter_s, 0);
+			fseek(or , counter_s*sizeof(Order), 0);
 			or_ind[id] = ftell(or ) / sizeof(struct Order);
 			fwrite(&order, sizeof(Order), 1, or );
 			locker = 1;
@@ -646,6 +529,8 @@ void insert_menu(int *ck_ind, int *or_ind) {
 	}
 }
 void m_update_m(int *ck_ind, int *or_ind, int id) {
+	// IT's OLD FUNCTION OF UPDATE_S (BAD REALISATION)
+	//#######################################################
 	FILE *ck = fopen("cook.bin", "rb");
 	struct Cook cook;
 	fseek(ck, 0, 2);
@@ -709,29 +594,12 @@ void update_m(int *ck_ind, int *or_ind, int id) {
 	cin.ignore();
 	fseek(ck, ck_ind[id] * sizeof(Cook), 0);
 	fwrite(&cook, sizeof(Cook), 1, ck);
-/*	while (fread(&cook, sizeof(struct Cook), 1, ck) != NULL) {
-		if (cook.id == id) {
-			if (cook.is_exist == 1) {
-				cout << "\nNAME: " << cook.name << "\nEXP: " << cook.exp << "\nSALARY: " << cook.salary << endl;
-				cout << "\nENTER\nNAME: ";
-				cin.getline(cook.name, 20);
-				cout << "EXPERIENCE: ";
-				cin >> cook.exp;
-				cin.ignore();
-				cout << "SALARY: ";
-				cin >> cook.salary;
-				cout << "ORDER: ";
-				cin >> cook.order_id;
-				cin.ignore();
-				//			cook.is_exist = 1;
-			}
-		}
-		fwrite(&cook, sizeof(struct Cook), 1, swap);
-	}*/
 	fclose(ck);
 	//	menus(ck_ind, or_ind);
 }
-void s_update_s(int *ck_ind, int *or_ind, int id) {
+void s_update_s(int *ck_ind, int *or_ind, int id) { 
+	// IT's OLD FUNCTION OF UPDATE_S (BAD REALISATION)
+	//#######################################################
 	FILE * or = fopen("order.bin", "rb+");
 	struct Order order;
 	fseek(or, 0, 2);
@@ -782,21 +650,6 @@ void update_s(int *ck_ind, int *or_ind, int id) {
 	cin >> order.price;
 	cin.ignore();
 	fwrite(&order, sizeof(struct Order), 1, or );
-//	FILE *swap = fopen("swap.bin", "wb");
-/*	while (fread(&order, sizeof(struct Order), 1, or ) != NULL) {
-		if (order.id == id) {
-			if (order.is_exist == 1) {
-				cout << "\nWAS\nPRICE: " << order.price << "\nCOOK ID: " << order.cook  << endl;
-				cout << "\nENTER\nPRICE: ";
-				cin >> order.price;
-				cin.ignore();
-				//			cout << "COOK ID: ";
-				//			cin >> order.cook;
-				//			cin.ignore();
-			}
-		}
-		fwrite(&order, sizeof(struct Order), 1, swap);
-	}*/
 	fclose(or );
 	//	menus(ck_ind, or_ind);
 }
@@ -820,6 +673,8 @@ void ut_m(int *ck_ind, int *or_ind) {
 	struct Cook cook;
 	while (fread(&cook, sizeof(struct Cook), 1, ck)!=NULL){
 		cout << endl;
+		if (cook.is_exist==1)
+		cout << "ADRESS in file: " << ck_ind[cook.id]*sizeof(Cook) << endl;
 		cout << "ID: " << cook.id << endl;
 		cout << "Name: " << cook.name << endl;
 		cout << "Experience: " << cook.exp << endl;
@@ -835,6 +690,8 @@ void ut_s(int *ck_ind, int *or_ind) {
 	struct Order order;
 	while (fread(&order, sizeof(struct Order), 1, or ) != NULL) {
 			cout << endl;
+			if (order.is_exist==1)
+			cout << "ADRESS in file: " << or_ind[order.id]*sizeof(Order) << endl;
 			cout << "ID: " << order.id << endl;
 			cout << "PRICE: " << order.price << endl;
 //			cout << "COOK ID: " << order.cook << endl;
@@ -996,7 +853,6 @@ int main()
 	fclose(f);
 	f = fopen("swap2.bin", "wb");
 	fclose(f);*/
-/**/
 	FILE *ck_i = fopen("cook.ind", "rb");
 	FILE *or_i = fopen("order.ind", "rb");
 	fseek(ck_i, 0, 2);
@@ -1029,4 +885,3 @@ int main()
 //	free(or_ind);
     return 0;
 }
-
